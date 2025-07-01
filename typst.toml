@@ -1,0 +1,17 @@
+[package]
+name = "doluk-letter"
+version = "0.1.1"
+compiler = "0.13.1"
+entrypoint = "template.typ"
+authors = [ "TomVer99" ]
+license = "MIT"
+description = "A simple template to create checklists with an aviation inspired style."
+repository = "https://github.com/TomVer99/Typst-checklist-template"
+keywords = [ "checklist" ]
+categories = [ "utility", "office" ]
+disciplines = [ ]
+
+[template]
+path = "template"
+entrypoint = "main.typ"
+thumbnail = ""
