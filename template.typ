@@ -112,6 +112,7 @@
 
   // signer line (required)
   signer: none,
+  signature: none,
 
   // attachments line at bottom of letter (optional)
   attachments: none,
@@ -255,7 +256,17 @@
   
   // Add body.
   [#body #v(2em)]
-  [#closing #v(1cm) #blul(6cm) \ #signer]
+  let end_letter(close, sign, signature) = context {
+    let sig_space = v(1cm)
+    let size_sig_space = measure(sign).width
+    if (signature != none) {
+      sig_space = image(signature, alt: "Signature", height: 2cm, fit: "contain")
+      size_sig_space = calc.max(size_sig_space, measure(sig_space).width)
+    }
+    let size = calc.max(size_sig_space + 1cm, 4cm)
+    [#close #sig_space #blul(size)\ #sign]
+  }
+  end_letter(closing,signer, signature)
   let attachment_desc = context {if text.lang == "de" {"Anhänge"} else {"Attachments"}} 
 
   
@@ -483,7 +494,7 @@
 ///   )
 ///   ```
 /// 
-/// - date (content, none): The date that will be displayed on the right below the subject.
+/// - date (auto, datetime, content, none): The date that will be displayed on the right below the subject.
 /// - subject (string, none): The subject line and the document title.
 /// 
 /// - page-numbering (auto, string, function, none): Defines the format of the page numbers.
@@ -527,7 +538,7 @@
   hole-mark: true,
   
   sender: (
-    name: none,
+    name: "",
     address: none,
     phone: none,
     email: none,
@@ -549,6 +560,7 @@
 
   // signer line (required)
   signer: none,
+  signature: none,
 
   // attachments line at bottom of letter (optional)
   attachments: none,
@@ -576,9 +588,16 @@
   // Configure page and text properties.
   set document(
     title: subject,
-    author: sender.name,
+    author: sender.at("name", default: ""),
   )
-
+  if date == auto {
+    // default to today
+    date = datetime.today()
+  }
+  // if date is of type datetime, then parse it to string
+  if type(date) == datetime {
+    date = date.display()
+  }
   set text(font: font, hyphenate: false)
 
   // Create a simple header if there is none
@@ -590,8 +609,8 @@
       bottom: 5mm,
       
       align(bottom + right, header-simple(
-        sender.name,
-        if sender.address != none {
+        sender.at("name", default: ""),
+        if sender.at("address", default: none) != none {
           sender.address.split(", ").join(linebreak())
         },
         phone: sender.at("phone", default: none),
@@ -601,7 +620,9 @@
     )
   }
 
-  let sender-box      = sender-box(name: sender.name, sender.address)
+  let sender-box      = sender-box(
+      name: sender.at("name", default: ""),
+     sender.at("address", default: none))
   let annotations-box = annotations-box(annotations)
   let recipient-box   = recipient-box(recipient)
 
@@ -625,7 +646,8 @@
     reference-signs: reference-signs,
 
     page-numbering: page-numbering,
-    signer: if signer != none {signer} else {sender.name},
+    signer: if signer != none {signer} else {sender.at("name", default: "")},
+    signature: signature,
     closing: closing,
     attachments: attachments,
     

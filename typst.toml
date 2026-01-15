@@ -1,6 +1,6 @@
 [package]
 name = "doluk-letter"
-version = "0.1.1"
+version = "0.2.1"
 compiler = "0.13.1"
 entrypoint = "template.typ"
 authors = [ "TomVer99" ]

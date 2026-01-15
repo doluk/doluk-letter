@@ -1,4 +1,4 @@
-#import "@local/doluk-letter:0.1.1": *
+#import "@local/doluk-letter:0.2.1": *
 
 // Take a look at the file `template.typ` in the file panel
 // to customize this template and discover how it works.
@@ -19,7 +19,10 @@
   
   date: "01. Juni 2025",
   subject: "Example subject",
-  reference-signs: (([Ref-Sign], [xyp]),)
+  reference-signs: (([Ref-Sign], [xyp]),
+
+),
+signature: "kutmuehle.png"
 )
 
 // We generated the example code below so you can see how
